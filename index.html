@@ -529,7 +529,7 @@
                 </div>
 
                 <div class="question-card">
-                    <div class="question-text">♻️ 2. Como você avalia as informações sobre reciclagem e aproveitamento de resíduos?</div>
+                    <div class="question-text">🚶‍♀️ 2. Como foi a visita em campo?</div>
                     <div class="rating-container">
                         <div class="emoji-rating" data-question="2">
                             <div class="rating-option" data-value="1">
@@ -562,7 +562,7 @@
                 </div>
 
                 <div class="question-card">
-                    <div class="question-text">🚶‍♀️ 3. O que achou da visita aos pontos operacionais (Balança, Lagoa de Chorume, Pátios)?</div>
+                    <div class="question-text">👷 3. Qual foi sua impressão sobre o trabalho realizado no Aterro Sanitário?</div>
                     <div class="rating-container">
                         <div class="emoji-rating" data-question="3">
                             <div class="rating-option" data-value="1">
@@ -594,43 +594,10 @@
                     </div>
                 </div>
 
-                <div class="question-card">
-                    <div class="question-text">🌱 4. Como foi a experiência no Viveiro e as orientações sobre produção de mudas?</div>
-                    <div class="rating-container">
-                        <div class="emoji-rating" data-question="4">
-                            <div class="rating-option" data-value="1">
-                                <div class="rating-emoji">😞</div>
-                                <div class="rating-stars">★</div>
-                                <div class="rating-label">Muito Ruim</div>
-                            </div>
-                            <div class="rating-option" data-value="2">
-                                <div class="rating-emoji">😕</div>
-                                <div class="rating-stars">★★</div>
-                                <div class="rating-label">Ruim</div>
-                            </div>
-                            <div class="rating-option" data-value="3">
-                                <div class="rating-emoji">😐</div>
-                                <div class="rating-stars">★★★</div>
-                                <div class="rating-label">Médio</div>
-                            </div>
-                            <div class="rating-option" data-value="4">
-                                <div class="rating-emoji">😊</div>
-                                <div class="rating-stars">★★★★</div>
-                                <div class="rating-label">Bom</div>
-                            </div>
-                            <div class="rating-option" data-value="5">
-                                <div class="rating-emoji">🤩</div>
-                                <div class="rating-stars">★★★★★</div>
-                                <div class="rating-label">Excelente</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                       <div class="question-card">
-  <div class="question-text">🏫 5. Você recomendaria essa visita a outras pessoas ou turmas?</div>
+                                     <div class="question-card">
+  <div class="question-text">🏫 4. Você recomendaria essa visita a outras pessoas ou turmas?</div>
   <div class="rating-container">
-    <div class="emoji-rating" data-question="5">
+    <div class="emoji-rating" data-question="4">
       <div class="rating-option" data-value="1">
         <div class="rating-emoji">❌</div>
         <div class="rating-label">Não recomendaria</div>
@@ -654,6 +621,8 @@
     </div>
   </div>
 </div>
+
+
 
                 <div class="question-card">
                     <div class="question-text" style="font-size:16px;">
@@ -704,7 +673,7 @@
         };
 
         // Configuração do Google Apps Script (substitua pela sua URL)
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx2Hn_yvWBCqekqpZLGxHh_luaNwBlN6rZToMya3l1AVFcGXWgWHFFcfgDUoGS58WqD/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyL_Ct5E_GL5f04mfg3rw7yoiccvBwSEwhP3NmF18TD_XCHVJ-ZwZ6h-DNlzLYWymxr8g/exec';
 
         // Selecionar elementos
         const ratingOptions = document.querySelectorAll('.rating-option');
@@ -863,14 +832,14 @@
         }
 
         function updateProgress() {
-            const totalQuestions = 5;
+            const totalQuestions = 4;
             const answeredQuestions = Object.keys(surveyData.responses).length;
             const progress = (answeredQuestions / totalQuestions) * 100;
             progressFill.style.width = progress + '%';
         }
 
         function checkSubmitButton() {
-            const totalQuestions = 5;
+            const totalQuestions = 4;
             const answeredQuestions = Object.keys(surveyData.responses).length;
             
             if (answeredQuestions === totalQuestions) {
@@ -936,14 +905,14 @@
 
         // Função para gerar dados CSV (para teste)
         function generateCSV() {
-            const headers = ['Timestamp', 'Pergunta 1', 'Pergunta 2', 'Pergunta 3', 'Pergunta 4', 'Pergunta 5'];
+            const headers = ['Timestamp', 'Pergunta 1', 'Pergunta 2', 'Pergunta 3', 'Pergunta 4', 'Comentario'];
             const values = [
                 surveyData.timestamp,
                 surveyData.responses.pergunta_1 || '',
                 surveyData.responses.pergunta_2 || '',
                 surveyData.responses.pergunta_3 || '',
                 surveyData.responses.pergunta_4 || '',
-                surveyData.responses.pergunta_5 || ''
+                surveyData.comentario || ''
             ];
             
             return headers.join(',') + '\n' + values.join(',');

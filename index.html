@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,15 +24,32 @@
             max-width: 800px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
+            border-radius: 20px; 
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             padding: 30px;
             backdrop-filter: blur(10px);
         }
 
+        .form-header-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(50px);
+            /* Puxa o cabeçalho para o topo do container */
+            margin: -30px -30px 25px -30px;
+            padding-top: 30px;
+            padding-left: 30px;
+            padding-right: 30px;
+            padding-bottom: 20px;
+            /* Arredonda apenas os cantos superiores para combinar com o container */
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.123);
+        }
+
         .header {
-            text-align: center;
-            margin-bottom: 40px;
+            text-align: center; 
+            margin-bottom: 25px;
         }
 
         .logo-placeholder {
@@ -47,6 +65,9 @@
             color: #00964100;
             font-weight: bold;
             font-size: 14px;
+            margin-bottom: 10px;
+                margin-top: -25px;
+                padding: 0px;
         }
 
         .title {
@@ -54,6 +75,7 @@
             font-size: 28px;
             font-weight: bold;
             margin-bottom: 10px;
+            margin-top: -10px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
@@ -236,7 +258,7 @@
             height: 8px;
             background: #f0f0f0;
             border-radius: 4px;
-            margin-bottom: 30px;
+            margin-bottom: 0; /* O espaçamento é controlado pelo padding do .form-header-sticky */
             overflow: hidden;
         }
 
@@ -361,7 +383,7 @@
                 max-width: 100vw;
                 padding: 8px;
                 margin: 0;
-                border-radius: 10;
+                border-radius: 10px;
                 box-shadow: none;
             }
             .header {
@@ -370,7 +392,16 @@
             .logo-placeholder {
                 width: 180px;
                 height: 60px;
-                margin-bottom: 10px;
+                margin: -15px auto 10px; /* Ajustado para o novo padding do header */
+            }
+            .form-header-sticky {
+                /* Ajusta o cabeçalho para o padding do container mobile */
+                margin: -8px -8px 20px -8px;
+                padding-left: 8px;
+                padding-right: 8px;
+                padding-top: 20px;
+                padding-bottom: 15px;
+                border-radius: 10px 10px 0 0; /* Combina com o border-radius do container mobile */
             }
             .title {
                 font-size: 18px;
@@ -441,16 +472,18 @@
 <body>
     <div class="container">
         <div class="survey-form" id="surveyForm">
-            <div class="header">
-                <div class="logo-placeholder">
-                    <img src="logo-comurg.png" alt="Logo COMURG" style="max-width: 100%; max-height: 100%;">
+            <div class="form-header-sticky">
+                <div class="header">
+                    <div class="logo-placeholder">
+                        <img src="logo-comurg.png" alt="Logo COMURG" style="max-width: 100%; max-height: 100%;">
+                    </div>
+                    <h1 class="title">Como foi sua visita ao Aterro Sanitário de Goiânia?</h1>
+                    <p class="subtitle">Sua opinião é muito importante para melhorarmos nossos serviços!</p>
                 </div>
-                <h1 class="title">Como foi sua visita ao Aterro Sanitário de Goiânia?</h1>
-                <p class="subtitle">Sua opinião é muito importante para melhorarmos nossos serviços!</p>
-            </div>
 
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
             </div>
 
             <form id="satisfactionSurvey">
@@ -586,7 +619,7 @@
                     </div>
                 </div>
 
-                <div class="question-card">
+                       <div class="question-card">
   <div class="question-text">🏫 5. Você recomendaria essa visita a outras pessoas ou turmas?</div>
   <div class="rating-container">
     <div class="emoji-rating" data-question="5">
@@ -614,7 +647,6 @@
   </div>
 </div>
 
-
                 <div class="question-card">
                     <div class="question-text" style="font-size:16px;">
                         💬 Gostaria de deixar alguma sugestão ou comentário? <span style="color:#888; font-size:13px;">(Opcional)</span>
@@ -624,7 +656,7 @@
 
                 <div class="submit-section">
                     <button type="submit" class="submit-btn" id="submitBtn" disabled>
-                        Enviar Respostas 📝
+                        Enviar Pesquisa 📝
                     </button>
                 </div>
             </form>
@@ -642,6 +674,12 @@
     </div>
 
     <script>
+        // --- CONFIGURAÇÃO DE VOTO ÚNICO ---
+        // Mude para 'false' para permitir múltiplos votos por dispositivo (para testes, por exemplo).
+        const ENABLE_VOTE_LOCK = false; 
+        const VOTE_LOCK_KEY = 'aterroSurveyVoted';
+        // ------------------------------------
+
         // Dados da pesquisa
         const surveyData = {
             timestamp: null,
@@ -690,13 +728,23 @@
 
         function updateEmojiRating(questionNum, rating) {
             const questionOptions = document.querySelectorAll(`[data-question="${questionNum}"] .rating-option`);
-            questionOptions.forEach((option, index) => {
-                if (index + 1 <= rating) {
-                    option.classList.add('active');
-                } else {
-                    option.classList.remove('active');
+            
+            // A pergunta 5 tem lógica de seleção única, as outras são cumulativas (estrelas)
+            if (questionNum === '5') {
+                questionOptions.forEach(opt => opt.classList.remove('active'));
+                const selectedOption = document.querySelector(`[data-question="5"] [data-value="${rating}"]`);
+                if (selectedOption) {
+                    selectedOption.classList.add('active');
                 }
-            });
+            } else {
+                questionOptions.forEach((option, index) => {
+                    if (index + 1 <= rating) {
+                        option.classList.add('active');
+                    } else {
+                        option.classList.remove('active');
+                    }
+                });
+            }
         }
 
         function calculateAverage() {
@@ -760,6 +808,26 @@
             modal.style.display = 'block';
         }
 
+        function showAlreadyVotedMessage() {
+            if (surveyForm && thankYou) {
+                // Esconde o formulário
+                surveyForm.style.display = 'none';
+
+                // Modifica a mensagem de agradecimento para "já votou"
+                const thankYouTitle = thankYou.querySelector('h2');
+                const thankYouText = thankYou.querySelector('p');
+                const thankYouIcons = thankYou.querySelector('.thank-icons');
+
+                if(thankYouTitle) thankYouTitle.textContent = '✅ Voto Registrado';
+                if(thankYouText) thankYouText.innerHTML = 'Seu voto já foi recebido.<br>Agradecemos sua participação!';
+                if(thankYouIcons) thankYouIcons.textContent = '👍';
+
+                // Mostra a tela de "já votou"
+                thankYou.style.display = 'block';
+            }
+        }
+
+
         function closeModal() {
             const modal = document.querySelector('.modal');
             if (modal) {
@@ -784,7 +852,7 @@
             
             if (answeredQuestions === totalQuestions) {
                 submitBtn.disabled = false;
-                submitBtn.style.background =  '#009640';
+                submitBtn.style.background = 'linear-gradient(45deg, #009640, #ef7d00)';
             }
         }
 
@@ -826,6 +894,12 @@
                 // Como 'no-cors' não permite ler a resposta,
                 // assumimos sucesso e mostramos o resultado.
                 console.log('Dados enviados (sucesso presumido):', surveyData);
+
+                // Grava no localStorage que o voto foi feito
+                if (ENABLE_VOTE_LOCK) {
+                    localStorage.setItem(VOTE_LOCK_KEY, 'true');
+                }
+
                 showResultModal();
             })
             .catch(error => {
@@ -854,8 +928,13 @@
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Pesquisa de Satisfação - Aterro Sanitário de Goiânia');
-            console.log('Pronto para receber avaliações!');
+            if (ENABLE_VOTE_LOCK && localStorage.getItem(VOTE_LOCK_KEY) === 'true') {
+                // Se já votou, mostra a mensagem e encerra.
+                showAlreadyVotedMessage();
+            } else {
+                // Se não votou, inicia a aplicação normalmente.
+                console.log('Pesquisa de Satisfação - Aterro Sanitário de Goiânia');
+            }
         });
     </script>
 </body>

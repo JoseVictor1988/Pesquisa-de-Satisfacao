@@ -138,14 +138,15 @@
             color: #000;
         }
 
-        .rating-option:hover {
+        .rating-option:hover,
+        .rating-option.hover-active {
             background: #f0f0f0;
             transform: translateY(-1px);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             border-color: rgba(0, 150, 64, 0.2);
             color: #000;
         }
-
+        
         .rating-option.active {
             background: rgba(0, 150, 64, 0.08);
             color: #009640;
@@ -164,6 +165,13 @@
         .rating-emoji {
             font-size: 40px;
             margin-bottom: 8px;
+            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1); /* Adicionado para a animação de "salto" */
+        }
+
+        .rating-option:hover .rating-emoji,
+        .rating-option.active .rating-emoji,
+        .rating-option.hover-active .rating-emoji {
+            transform: scale(1.2); /* Efeito de "salto" ao passar o mouse ou selecionar */
         }
 
         .rating-stars {
@@ -729,23 +737,39 @@
         function updateEmojiRating(questionNum, rating) {
             const questionOptions = document.querySelectorAll(`[data-question="${questionNum}"] .rating-option`);
             
-            // A pergunta 5 tem lógica de seleção única, as outras são cumulativas (estrelas)
-            if (questionNum === '5') {
-                questionOptions.forEach(opt => opt.classList.remove('active'));
-                const selectedOption = document.querySelector(`[data-question="5"] [data-value="${rating}"]`);
-                if (selectedOption) {
-                    selectedOption.classList.add('active');
+            // Lógica de seleção CUMULATIVA para TODAS as perguntas.
+            questionOptions.forEach((option, index) => {
+                if (index + 1 <= rating) {
+                    option.classList.add('active');
+                } else {
+                    option.classList.remove('active');
                 }
-            } else {
-                questionOptions.forEach((option, index) => {
-                    if (index + 1 <= rating) {
-                        option.classList.add('active');
-                    } else {
-                        option.classList.remove('active');
-                    }
-                });
-            }
+            });
         }
+
+        // --- LÓGICA PARA HOVER CUMULATIVO ---
+        document.querySelectorAll('.emoji-rating').forEach(container => {
+            const options = container.querySelectorAll('.rating-option');
+
+            // Adiciona a classe 'hover-active' cumulativamente
+            options.forEach(option => {
+                option.addEventListener('mouseover', function() {
+                    const hoverValue = parseInt(this.dataset.value);
+                    options.forEach((opt, index) => {
+                        if (index < hoverValue) {
+                            opt.classList.add('hover-active');
+                        } else {
+                            opt.classList.remove('hover-active');
+                        }
+                    });
+                });
+            });
+
+            // Limpa as classes de hover quando o mouse sai da área dos emojis
+            container.addEventListener('mouseleave', function() {
+                options.forEach(opt => opt.classList.remove('hover-active'));
+            });
+        });
 
         function calculateAverage() {
             const responses = Object.values(surveyData.responses);
@@ -777,7 +801,6 @@
             for (let i = 0; i < fullStars; i++) {
                 stars += '★';
             }
-            
             if (hasHalfStar) {
                 stars += '☆';
             }
@@ -852,7 +875,7 @@
             
             if (answeredQuestions === totalQuestions) {
                 submitBtn.disabled = false;
-                submitBtn.style.background = 'linear-gradient(45deg, #009640, #ef7d00)';
+                submitBtn.style.background =  '#009640';
             }
         }
 

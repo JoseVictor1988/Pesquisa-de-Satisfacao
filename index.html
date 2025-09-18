@@ -386,6 +386,101 @@
             display: block;
         }
 
+        /* Welcome Screen Styles */
+        .welcome-screen {
+            display: block;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .welcome-screen h1 {
+            color: #009640;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-screen p {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        .profile-selection {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .profile-option {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .profile-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: rgba(0, 150, 64, 0.3);
+        }
+
+        .profile-option.selected {
+            border-color: #009640;
+            background: rgba(0, 150, 64, 0.05);
+        }
+
+        .profile-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .profile-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #009640;
+            margin-bottom: 10px;
+        }
+
+        .profile-description {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .continue-btn {
+            background: #009640;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 150, 64, 0.2);
+            margin-top: 30px;
+            display: none;
+        }
+
+        .continue-btn:hover {
+            background: #00a547;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(0, 150, 64, 0.25);
+        }
+
+        .continue-btn.show {
+            display: inline-block;
+        }
+
         @media (max-width: 600px) {
             .container {
                 max-width: 100vw;
@@ -474,12 +569,82 @@
                 font-size: 32px;
                 margin: 32px 0 0 0;
             }
+
+            .welcome-screen {
+                padding: 20px;
+            }
+
+            .welcome-screen h1 {
+                font-size: 22px;
+                margin-bottom: 15px;
+            }
+
+            .welcome-screen p {
+                font-size: 14px;
+                margin-bottom: 25px;
+            }
+
+            .profile-selection {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+
+            .profile-option {
+                min-width: 250px;
+                padding: 20px;
+            }
+
+            .profile-icon {
+                font-size: 40px;
+                margin-bottom: 10px;
+            }
+
+            .profile-title {
+                font-size: 16px;
+            }
+
+            .profile-description {
+                font-size: 12px;
+            }
+
+            .continue-btn {
+                font-size: 16px;
+                padding: 12px 30px;
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="survey-form" id="surveyForm">
+        <!-- Welcome Screen -->
+        <div class="welcome-screen" id="welcomeScreen">
+            <div class="header">
+                <div class="logo-placeholder">
+                    <img src="logo-comurg.png" alt="Logo COMURG" style="max-width: 100%; max-height: 100%;">
+                </div>
+                <h1>Bem-vindo ao Aterro Sanitário de Goiânia</h1>
+                <p>Por favor, selecione seu perfil:</p>
+            </div>
+
+            <div class="profile-selection">
+                <div class="profile-option" data-profile="Aluno">
+                    <div class="profile-icon">🎓</div>
+                    <div class="profile-title">Aluno</div>
+                    <div class="profile-description">Estudante visitando as instalações</div>
+                </div>
+                <div class="profile-option" data-profile="Professor">
+                    <div class="profile-icon">👨‍🏫</div>
+                    <div class="profile-title">Professor</div>
+                    <div class="profile-description">Educador acompanhando a visita</div>
+                </div>
+            </div>
+
+            <button class="continue-btn" id="continueBtn">Continuar para a Pesquisa 📝</button>
+        </div>
+
+        <div class="survey-form" id="surveyForm" style="display: none;">
             <div class="form-header-sticky">
                 <div class="header">
                     <div class="logo-placeholder">
@@ -660,7 +825,8 @@
         // Dados da pesquisa
         const surveyData = {
             timestamp: null,
-            responses: {}
+            responses: {},
+            perfil: null
         };
 
         // Emojis para cada avaliação
@@ -673,7 +839,7 @@
         };
 
         // Configuração do Google Apps Script (substitua pela sua URL)
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyL_Ct5E_GL5f04mfg3rw7yoiccvBwSEwhP3NmF18TD_XCHVJ-ZwZ6h-DNlzLYWymxr8g/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwS7wBmMtpwKREj9Me0mpzzX1ovqoXK8AC0PaVKwOdKH7FFLadbuNmsXtmz8_2F_neGOg/exec';
 
         // Selecionar elementos
         const ratingOptions = document.querySelectorAll('.rating-option');
@@ -682,6 +848,38 @@
         const surveyForm = document.getElementById('surveyForm');
         const thankYou = document.getElementById('thankYou');
         const form = document.getElementById('satisfactionSurvey');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const continueBtn = document.getElementById('continueBtn');
+        const profileOptions = document.querySelectorAll('.profile-option');
+
+        // Profile selection logic
+        let selectedProfile = null;
+
+        profileOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                profileOptions.forEach(opt => opt.classList.remove('selected'));
+                
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                
+                // Store selected profile
+                selectedProfile = this.dataset.profile;
+                surveyData.perfil = selectedProfile;
+                
+                // Show continue button
+                continueBtn.classList.add('show');
+            });
+        });
+
+        // Continue button logic
+        continueBtn.addEventListener('click', function() {
+            if (selectedProfile) {
+                // Hide welcome screen and show survey
+                welcomeScreen.style.display = 'none';
+                surveyForm.style.display = 'block';
+            }
+        });
 
         // Event listeners para os emojis de avaliação
         ratingOptions.forEach(option => {
@@ -802,7 +1000,8 @@
 
         function showAlreadyVotedMessage() {
             if (surveyForm && thankYou) {
-                // Esconde o formulário
+                // Esconde a tela de boas-vindas e o formulário
+                welcomeScreen.style.display = 'none';
                 surveyForm.style.display = 'none';
 
                 // Modifica a mensagem de agradecimento para "já votou"
@@ -827,6 +1026,7 @@
             }
             
             // Mostrar tela de agradecimento
+            welcomeScreen.style.display = 'none';
             surveyForm.style.display = 'none';
             thankYou.style.display = 'block';
         }
@@ -905,9 +1105,10 @@
 
         // Função para gerar dados CSV (para teste)
         function generateCSV() {
-            const headers = ['Timestamp', 'Pergunta 1', 'Pergunta 2', 'Pergunta 3', 'Pergunta 4', 'Comentario'];
+            const headers = ['Timestamp', 'Perfil', 'Pergunta 1', 'Pergunta 2', 'Pergunta 3', 'Pergunta 4', 'Comentario'];
             const values = [
                 surveyData.timestamp,
+                surveyData.perfil || '',
                 surveyData.responses.pergunta_1 || '',
                 surveyData.responses.pergunta_2 || '',
                 surveyData.responses.pergunta_3 || '',

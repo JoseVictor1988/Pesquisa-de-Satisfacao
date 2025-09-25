@@ -386,6 +386,97 @@
             display: block;
         }
 
+        /* Signature Section Styles */
+        .signature-section {
+            margin-top: 20px;
+        }
+
+        .signature-options {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .signature-btn {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .signature-btn:hover {
+            border-color: #009640;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 150, 64, 0.15);
+        }
+
+        .signature-btn.selected {
+            border-color: #009640;
+            background: rgba(0, 150, 64, 0.05);
+        }
+
+        .signature-icon {
+            font-size: 32px;
+            margin-bottom: 4px;
+        }
+
+        .signature-label {
+            font-weight: 600;
+            color: #009640;
+            font-size: 16px;
+        }
+
+        .signature-desc {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .name-input-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 150, 64, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 150, 64, 0.2);
+        }
+
+        .confirm-name-btn, .cancel-name-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .confirm-name-btn {
+            background: #009640;
+            color: white;
+        }
+
+        .confirm-name-btn:hover {
+            background: #00a547;
+            transform: translateY(-1px);
+        }
+
+        .cancel-name-btn {
+            background: #f3f4f6;
+            color: #666;
+        }
+
+        .cancel-name-btn:hover {
+            background: #e5e7eb;
+        }
+
         /* Welcome Screen Styles */
         .welcome-screen {
             display: block;
@@ -409,10 +500,13 @@
 
         .profile-selection {
             display: flex;
-            gap: 30px;
+            gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
             margin-top: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .profile-option {
@@ -423,8 +517,10 @@
             border: 3px solid transparent;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-width: 200px;
+            min-width: 180px;
+            max-width: 220px;
             text-align: center;
+            flex: 1;
         }
 
         .profile-option:hover {
@@ -613,6 +709,39 @@
                 padding: 12px 30px;
                 margin-top: 20px;
             }
+
+            .signature-options {
+                flex-direction: column;
+                gap: 12px;
+                align-items: center;
+            }
+
+            .signature-btn {
+                min-width: 200px;
+                padding: 15px;
+            }
+
+            .signature-icon {
+                font-size: 24px;
+            }
+
+            .signature-label {
+                font-size: 14px;
+            }
+
+            .signature-desc {
+                font-size: 11px;
+            }
+
+            .name-input-container {
+                margin-top: 15px;
+                padding: 15px;
+            }
+
+            .confirm-name-btn, .cancel-name-btn {
+                flex: 1;
+                padding: 10px;
+            }
         }
     </style>
 </head>
@@ -638,6 +767,11 @@
                     <div class="profile-icon">👨‍🏫</div>
                     <div class="profile-title">Professor</div>
                     <div class="profile-description">Educador acompanhando a visita</div>
+                </div>
+                <div class="profile-option" data-profile="Visitante">
+                    <div class="profile-icon">👤</div>
+                    <div class="profile-title">Visitante</div>
+                    <div class="profile-description">Público externo em visita supervisionada</div>
                 </div>
             </div>
 
@@ -796,6 +930,43 @@
                     <textarea name="comentario" id="comentario" rows="3" maxlength="300" style="width:100%; border-radius:8px; border:1px solid #ccc; padding:10px; font-size:14px; resize:vertical;" placeholder="Escreva aqui sua sugestão ou comentário..."></textarea>
                 </div>
 
+                <!-- Seção de Assinatura -->
+                <div class="signature-section" id="signatureSection" style="display: none;">
+                    <div class="question-card">
+                        <div class="question-text" style="font-size:16px; margin-bottom: 20px;">
+                            ✍️ Como você prefere enviar seu comentário?
+                        </div>
+                        <div class="signature-options">
+                            <button type="button" class="signature-btn" id="signBtn">
+                                <span class="signature-icon">✍️</span>
+                                <span class="signature-label">Assinar</span>
+                                <small class="signature-desc">Adicionar meu nome</small>
+                            </button>
+                            <button type="button" class="signature-btn" id="anonymousBtn">
+                                <span class="signature-icon">🔒</span>
+                                <span class="signature-label">Anônimo</span>
+                                <small class="signature-desc">Enviar sem identificação</small>
+                            </button>
+                        </div>
+                        
+                        <!-- Campo de nome (oculto inicialmente) -->
+                        <div class="name-input-container" id="nameInputContainer" style="display: none;">
+                            <div class="question-text" style="font-size:14px; margin-bottom: 10px;">
+                                📝 Por favor, digite seu nome:
+                            </div>
+                            <input type="text" id="participantName" maxlength="50" style="width:100%; border-radius:8px; border:1px solid #ccc; padding:10px; font-size:14px;" placeholder="Digite seu nome aqui...">
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button type="button" class="confirm-name-btn" id="confirmNameBtn">
+                                    Confirmar Nome ✅
+                                </button>
+                                <button type="button" class="cancel-name-btn" id="cancelNameBtn">
+                                    Cancelar ❌
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="submit-section">
                     <button type="submit" class="submit-btn" id="submitBtn" disabled>
                         Enviar Pesquisa 📝
@@ -818,7 +989,7 @@
     <script>
         // --- CONFIGURAÇÃO DE VOTO ÚNICO ---
         // Mude para 'false' para permitir múltiplos votos por dispositivo (para testes, por exemplo).
-        const ENABLE_VOTE_LOCK = true; 
+        const ENABLE_VOTE_LOCK = false; 
         const VOTE_LOCK_KEY = 'aterroSurveyVoted';
         // ------------------------------------
 
@@ -826,7 +997,9 @@
         const surveyData = {
             timestamp: null,
             responses: {},
-            perfil: null
+            perfil: null,
+            participantName: null,
+            isAnonymous: true
         };
 
         // Emojis para cada avaliação
@@ -839,7 +1012,7 @@
         };
 
         // Configuração do Google Apps Script (substitua pela sua URL)
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwS7wBmMtpwKREj9Me0mpzzX1ovqoXK8AC0PaVKwOdKH7FFLadbuNmsXtmz8_2F_neGOg/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz8yII5LF94ishyC5jsPZA3UgsGFHgOEUKQcVK4e6i5A5MRH2weaG_XluXwGWfS1C8VTw/exec';
 
         // Selecionar elementos
         const ratingOptions = document.querySelectorAll('.rating-option');
@@ -851,6 +1024,15 @@
         const welcomeScreen = document.getElementById('welcomeScreen');
         const continueBtn = document.getElementById('continueBtn');
         const profileOptions = document.querySelectorAll('.profile-option');
+        
+        // Elementos da seção de assinatura
+        const signatureSection = document.getElementById('signatureSection');
+        const signBtn = document.getElementById('signBtn');
+        const anonymousBtn = document.getElementById('anonymousBtn');
+        const nameInputContainer = document.getElementById('nameInputContainer');
+        const participantNameInput = document.getElementById('participantName');
+        const confirmNameBtn = document.getElementById('confirmNameBtn');
+        const cancelNameBtn = document.getElementById('cancelNameBtn');
 
         // Profile selection logic
         let selectedProfile = null;
@@ -979,6 +1161,11 @@
             // Os dados já foram calculados e estão em surveyData. Apenas os usamos para exibir o modal.
             const stars = generateStars(surveyData.average);
             
+            // Preparar mensagem personalizada com base no nome
+            const participantInfo = surveyData.isAnonymous 
+                ? "Sua avaliação foi registrada anonimamente." 
+                : `Obrigado, ${surveyData.participantName}!`;
+            
             // Criar e mostrar modal
             const modal = document.createElement('div');
             modal.className = 'modal';
@@ -989,7 +1176,8 @@
                     <div class="modal-emoji">${surveyData.averageEmoji}</div>
                     <div class="modal-stars">${stars}</div>
                     <div class="modal-description">${surveyData.averageDescription}</div>
-                    <p style="color: #666; margin-bottom: 20px;">Obrigado por avaliar sua visita ao Aterro Sanitário de Goiânia!</p>
+                    <p style="color: #009640; font-weight: 500; margin-bottom: 10px;">${participantInfo}</p>
+                    <p style="color: #666; margin-bottom: 20px;">Sua opinião nos ajuda a melhorar constantemente nossos serviços educativos.</p>
                     <button class="modal-close" onclick="closeModal()">Finalizar</button>
                 </div>
             `;
@@ -1044,7 +1232,10 @@
             
             if (answeredQuestions === totalQuestions) {
                 submitBtn.disabled = false;
-                submitBtn.style.background =  '#009640';
+                submitBtn.style.background = '#009640';
+                
+                // Modificar o texto do botão para mostrar que agora vai para a etapa de assinatura
+                submitBtn.textContent = 'Continuar ➡️';
             }
         }
 
@@ -1052,12 +1243,34 @@
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Adicionar timestamp
+            // Verificar se a seção de assinatura já foi mostrada
+            if (signatureSection.style.display === 'none') {
+                // Primeira submissão - mostrar seção de assinatura
+                showSignatureSection();
+            } else {
+                // Segunda submissão - enviar dados
+                submitSurvey();
+            }
+        });
+        
+        function showSignatureSection() {
+            // Adicionar timestamp e comentário temporariamente
             surveyData.timestamp = new Date().toISOString();
-            
-            // Adicionar comentário
             surveyData.comentario = document.getElementById('comentario').value.trim();
-
+            
+            // Mostrar seção de assinatura
+            signatureSection.style.display = 'block';
+            
+            // Modificar botão para envio final (inicialmente desabilitado)
+            submitBtn.textContent = 'Enviar Pesquisa 📝';
+            submitBtn.disabled = true;
+            submitBtn.style.background = '#516359';
+            
+            // Scroll suave para a seção de assinatura
+            signatureSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function submitSurvey() {
             // Calcular e adicionar média e dados relacionados ANTES de enviar
             const average = calculateAverage();
             surveyData.average = parseFloat(average);
@@ -1066,12 +1279,25 @@
 
             // Enviar para Google Sheets
             submitToGoogleSheets();
-        });
+        }
 
         function submitToGoogleSheets() {
             // Mostrar loading
             submitBtn.textContent = 'Enviando... ⏳';
             submitBtn.disabled = true;
+
+            // Debug: Log dos dados que serão enviados
+            console.log('Enviando dados para Google Sheets:', {
+                timestamp: surveyData.timestamp,
+                perfil: surveyData.perfil,
+                responses: surveyData.responses,
+                comentario: surveyData.comentario,
+                participantName: surveyData.participantName,
+                isAnonymous: surveyData.isAnonymous,
+                average: surveyData.average,
+                averageDescription: surveyData.averageDescription,
+                averageEmoji: surveyData.averageEmoji
+            });
 
             // Envia os dados para a planilha do Google via Apps Script
             fetch(GOOGLE_SCRIPT_URL, {
@@ -1099,7 +1325,8 @@
                 alert('Ocorreu um erro ao enviar sua pesquisa. Por favor, tente novamente.');
                 // Reabilita o botão em caso de erro
                 submitBtn.textContent = 'Enviar Pesquisa 📝';
-                checkSubmitButton(); // Reavalia o estado do botão
+                submitBtn.disabled = false;
+                submitBtn.style.background = '#009640';
             });
         }
 
@@ -1118,6 +1345,125 @@
             
             return headers.join(',') + '\n' + values.join(',');
         }
+
+        // Lógica dos botões de assinatura
+        signBtn.addEventListener('click', function() {
+            // Se já foi confirmado nome, permitir alteração
+            if (surveyData.participantName && !nameInputContainer.style.display === 'block') {
+                // Reset do botão para estado inicial
+                signBtn.innerHTML = `
+                    <span class="signature-icon">✍️</span>
+                    <span class="signature-label">Assinar</span>
+                    <small class="signature-desc">Adicionar meu nome</small>
+                `;
+            }
+            
+            // Selecionar botão "Assinar"
+            signBtn.classList.add('selected');
+            anonymousBtn.classList.remove('selected');
+            
+            // Mostrar campo de nome
+            nameInputContainer.style.display = 'block';
+            
+            // Se já tem nome, pré-preencher
+            if (surveyData.participantName) {
+                participantNameInput.value = surveyData.participantName;
+            }
+            
+            // Focar no campo de nome
+            setTimeout(() => participantNameInput.focus(), 100);
+            
+            // Atualizar dados
+            surveyData.isAnonymous = false;
+            
+            // Desabilitar botão de envio até confirmar nome
+            submitBtn.disabled = true;
+            submitBtn.style.background = '#516359';
+        });
+        
+        anonymousBtn.addEventListener('click', function() {
+            // Selecionar botão "Anônimo"
+            anonymousBtn.classList.add('selected');
+            signBtn.classList.remove('selected');
+            
+            // Ocultar campo de nome
+            nameInputContainer.style.display = 'none';
+            
+            // Atualizar dados
+            surveyData.isAnonymous = true;
+            surveyData.participantName = null;
+            
+            // Habilitar botão de envio
+            submitBtn.disabled = false;
+            submitBtn.style.background = '#009640';
+        });
+        
+        confirmNameBtn.addEventListener('click', function() {
+            const name = participantNameInput.value.trim();
+            
+            if (name === '') {
+                alert('Por favor, digite seu nome.');
+                participantNameInput.focus();
+                return;
+            }
+            
+            if (name.length < 2) {
+                alert('Por favor, digite um nome com pelo menos 2 caracteres.');
+                participantNameInput.focus();
+                return;
+            }
+            
+            // Salvar nome
+            surveyData.participantName = name;
+            
+            // Ocultar campo de nome e mostrar confirmação
+            nameInputContainer.style.display = 'none';
+            
+            // Mostrar nome confirmado no botão
+            signBtn.innerHTML = `
+                <span class="signature-icon">✅</span>
+                <span class="signature-label">Nome: ${name}</span>
+                <small class="signature-desc">Clique para alterar</small>
+            `;
+            
+            // Habilitar botão de envio
+            submitBtn.disabled = false;
+            submitBtn.style.background = '#009640';
+        });
+        
+        cancelNameBtn.addEventListener('click', function() {
+            // Limpar seleção
+            signBtn.classList.remove('selected');
+            anonymousBtn.classList.remove('selected');
+            
+            // Resetar botão assinar para estado inicial
+            signBtn.innerHTML = `
+                <span class="signature-icon">✍️</span>
+                <span class="signature-label">Assinar</span>
+                <small class="signature-desc">Adicionar meu nome</small>
+            `;
+            
+            // Ocultar campo de nome
+            nameInputContainer.style.display = 'none';
+            
+            // Limpar campo
+            participantNameInput.value = '';
+            
+            // Resetar dados
+            surveyData.isAnonymous = true;
+            surveyData.participantName = null;
+            
+            // Desabilitar botão de envio
+            submitBtn.disabled = true;
+            submitBtn.style.background = '#516359';
+        });
+        
+        // Permitir confirmar nome com Enter
+        participantNameInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                confirmNameBtn.click();
+            }
+        });
 
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
